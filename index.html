@@ -391,9 +391,13 @@
   //      'https://example.com/a.mp3'  (외부 MP3 직접 링크)
   // ============================================================
   const tracks = [
-    // { title: 'Remembrance of the Heart.mp3', artist: 'Honkai starrail', src: 'Remembrance_of_the_Heart.mp3' },
-    // { title: '다른 곡',       artist: '아티스트', src: 'songs/song2.mp3' },
-  ];
+  { 
+    title: 'Remembrance of the Heart', 
+    artist: 'Honkai Starrail', 
+    src: 'Remembrance_of_the_Heart.mp3',
+    duration: 180  // 일단 임시로 3분 설정
+  },
+];
 
   const $ = id => document.getElementById(id);
   const wrap = $('wrap');
