@@ -9,14 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --c1: #A8E6CF;
-    --c2: #B0E0E6;
-    --c3: #C3B1E1;
-    --c4: #FFB6C1;
-    --c5: #FFDAB9;
-    --c6: #E0BBE4;
-    --text: #ffffff;
-    --mute: rgba(255,255,255,0.55);
+    /* infinity palette (unchanged) */
+    --c1: #A8E6CF;  /* mint */
+    --c2: #B0E0E6;  /* sky */
+    --c3: #C3B1E1;  /* lavender */
+    --c4: #FFB6C1;  /* pink */
+    --c5: #FFDAB9;  /* peach */
+    --c6: #E0BBE4;  /* orchid */
+
+    /* light-mode text: deepened shades of the same family (plum / mauve) */
+    --text:      #3d2a5c;  /* deep plum — echoes lavender */
+    --text-soft: #6b547e;  /* muted mauve — for artist label */
+    --text-mute: #9486a8;  /* light mauve — for time stamps */
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -89,55 +93,90 @@
     50% { r: 6.5; }
   }
 
-  /* mini controls under sparkle (sits inside the infinity via negative margin) */
+  /* mini controls — collapsed circle, expand on hover */
   .mini-controls {
     position: relative;
     z-index: 5;
-    margin-top: -56px; /* pull up under the center sparkle */
+    margin-top: -56px;
     margin-bottom: 8px;
+    height: 34px;
+    width: 34px;
+    border-radius: 999px;
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 6px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 100%);
-    backdrop-filter: blur(14px) saturate(160%);
-    -webkit-backdrop-filter: blur(14px) saturate(160%);
-    border: 1px solid rgba(255,255,255,0.14);
+    justify-content: flex-start;
+    overflow: hidden;
+    padding: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(232, 220, 245, 0.45) 100%);
+    backdrop-filter: blur(16px) saturate(170%);
+    -webkit-backdrop-filter: blur(16px) saturate(170%);
+    border: 1px solid rgba(195, 177, 225, 0.55);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.25),
-      0 4px 14px rgba(0,0,0,0.2);
+      inset 0 1px 0 rgba(255,255,255,0.75),
+      0 4px 14px rgba(120, 90, 180, 0.2);
+    transition: width 0.45s cubic-bezier(.5,.05,.2,1), padding 0.45s cubic-bezier(.5,.05,.2,1);
+    cursor: pointer;
+  }
+
+  .mini-controls:hover {
+    width: 168px;
+    padding: 0 6px;
+    cursor: default;
+  }
+
+  /* collapsed hint */
+  .hint {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    color: var(--text-soft);
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
+  .hint svg { width: 13px; height: 13px; }
+  .mini-controls:hover .hint { opacity: 0; }
+
+  .mini-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.3s ease 0.12s, transform 0.35s cubic-bezier(.34,1.56,.64,1) 0.1s;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .mini-controls:hover .mini-row {
+    opacity: 1;
+    transform: translateX(0);
   }
 
   .mini {
     width: 26px; height: 26px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: transparent;
     border: none;
-    color: rgba(255,255,255,0.7);
+    color: var(--text-soft);
     cursor: pointer;
     display: grid;
     place-items: center;
     transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
   }
   .mini:hover {
-    color: #fff;
-    background: rgba(255,255,255,0.1);
+    color: var(--text);
+    background: rgba(195, 177, 225, 0.3);
     transform: translateY(-1px);
   }
   .mini:active { transform: scale(0.88); }
   .mini svg { width: 11px; height: 11px; }
 
   .mini.toggle.active {
-    color: var(--c3);
-    background: rgba(195,177,225,0.18);
-    box-shadow: 0 0 8px rgba(195,177,225,0.4);
-  }
-
-  .mini-div {
-    width: 1px; height: 12px;
-    background: rgba(255,255,255,0.15);
-    margin: 0 2px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--c3), var(--c6));
+    box-shadow: 0 0 8px rgba(195, 177, 225, 0.6);
   }
 
   .track {
@@ -146,17 +185,17 @@
   }
   .title {
     font-family: 'Fraunces', serif;
-    font-weight: 400;
+    font-weight: 500;
     font-style: italic;
     font-size: 20px;
     letter-spacing: -0.2px;
-    color: rgba(255,255,255,0.97);
+    color: var(--text);
     margin-bottom: 3px;
   }
   .artist {
     font-size: 10.5px;
-    font-weight: 500;
-    color: var(--mute);
+    font-weight: 600;
+    color: var(--text-soft);
     letter-spacing: 2.4px;
     text-transform: uppercase;
   }
@@ -166,13 +205,14 @@
     align-items: center;
     gap: 12px;
     font-size: 11px;
-    color: var(--mute);
+    color: var(--text-mute);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.6px;
+    font-weight: 500;
   }
   .sep {
     width: 70px; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    background: linear-gradient(90deg, transparent, rgba(148, 134, 168, 0.5), transparent);
   }
 </style>
 </head>
@@ -284,37 +324,46 @@
     </svg>
   </div>
 
-  <!-- tiny integrated controls under the sparkle -->
-  <div class="mini-controls">
-    <button class="mini" id="prev" title="이전">
+  <!-- collapsed → expand-on-hover controls -->
+  <div class="mini-controls" id="miniControls">
+    <div class="hint">
       <svg viewBox="0 0 24 24" fill="currentColor">
-        <polygon points="18,5 7,12 18,19"/>
-        <rect x="4" y="5" width="2.2" height="14" rx="1"/>
+        <circle cx="5" cy="12" r="1.6"/>
+        <circle cx="12" cy="12" r="1.6"/>
+        <circle cx="19" cy="12" r="1.6"/>
       </svg>
-    </button>
-    <button class="mini toggle" id="repeat" title="반복">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="17 1 21 5 17 9"/>
-        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-        <polyline points="7 23 3 19 7 15"/>
-        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
-      </svg>
-    </button>
-    <button class="mini toggle" id="shuffle" title="셔플">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="16 3 21 3 21 8"/>
-        <line x1="4" y1="20" x2="21" y2="3"/>
-        <polyline points="21 16 21 21 16 21"/>
-        <line x1="15" y1="15" x2="21" y2="21"/>
-        <line x1="4" y1="4" x2="9" y2="9"/>
-      </svg>
-    </button>
-    <button class="mini" id="next" title="다음">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <polygon points="6,5 17,12 6,19"/>
-        <rect x="17.8" y="5" width="2.2" height="14" rx="1"/>
-      </svg>
-    </button>
+    </div>
+    <div class="mini-row">
+      <button class="mini" id="prev" title="이전">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="18,5 7,12 18,19"/>
+          <rect x="4" y="5" width="2.2" height="14" rx="1"/>
+        </svg>
+      </button>
+      <button class="mini toggle" id="repeat" title="반복">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="17 1 21 5 17 9"/>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7 23 3 19 7 15"/>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
+      </button>
+      <button class="mini toggle" id="shuffle" title="셔플">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 3 21 3 21 8"/>
+          <line x1="4" y1="20" x2="21" y2="3"/>
+          <polyline points="21 16 21 21 16 21"/>
+          <line x1="15" y1="15" x2="21" y2="21"/>
+          <line x1="4" y1="4" x2="9" y2="9"/>
+        </svg>
+      </button>
+      <button class="mini" id="next" title="다음">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="6,5 17,12 6,19"/>
+          <rect x="17.8" y="5" width="2.2" height="14" rx="1"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
   <div class="track">
@@ -327,11 +376,25 @@
     <span class="sep"></span>
     <span id="dur">3:45</span>
   </div>
+
+  <!-- audio element for real playback -->
+  <audio id="audio" preload="metadata"></audio>
 </div>
 
 <script>
 (() => {
+  // ============================================================
+  //  🎵 여기에 곡을 추가하세요
+  //  - src 있으면 실제 재생, 없으면 데모 모드(시뮬레이션)
+  //  - src 경로 예시:
+  //      'songs/my-song.mp3'          (같은 폴더에 songs 폴더 만들고 파일 넣기)
+  //      'https://example.com/a.mp3'  (외부 MP3 직접 링크)
+  // ============================================================
   const tracks = [
+    // { title: '내 노래 제목', artist: '아티스트', src: 'songs/song1.mp3' },
+    // { title: '다른 곡',       artist: '아티스트', src: 'songs/song2.mp3' },
+
+    // 아래는 데모용 (src 없음 — 시뮬레이션으로 동작)
     { title: 'Infinite Flow',   artist: 'COSMIC WAVES', duration: 225 },
     { title: 'Astral Drift',    artist: 'NEBULA SOUND', duration: 198 },
     { title: 'Pastel Horizon',  artist: 'AURORA',       duration: 243 },
@@ -347,6 +410,7 @@
   const playhead = $('playhead');
   const hit = $('hit');
   const starBtn = $('starBtn');
+  const audio = $('audio');
   const svg = document.querySelector('.inf-svg');
   const infPath = document.getElementById('inf');
   const totalLen = infPath.getTotalLength();
@@ -356,73 +420,133 @@
   let playing = false;
   let repeat = false;
   let shuffle = false;
-  let ticker = null;
+  let simTicker = null;
 
-  const fmt = s => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+  const fmt = s => {
+    if (!isFinite(s) || s < 0) s = 0;
+    return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+  };
 
-  function render() {
+  const hasReal = i => !!tracks[i].src;
+  const trackDuration = () => {
+    if (hasReal(idx) && isFinite(audio.duration)) return audio.duration;
+    return tracks[idx].duration || 0;
+  };
+
+  function loadTrack() {
+    stopSim();
     const tr = tracks[idx];
     title.textContent = tr.title;
     artist.textContent = tr.artist;
-    dur.textContent = fmt(tr.duration);
+    t = 0;
+    if (tr.src) {
+      audio.src = tr.src;
+      audio.load();
+    } else {
+      audio.removeAttribute('src');
+      audio.load();
+    }
+    paintUI();
+  }
+
+  function paintUI() {
+    const d = trackDuration();
+    dur.textContent = fmt(d);
     cur.textContent = fmt(t);
-
-    const ratio = Math.min(1, Math.max(0, t / tr.duration));
+    const ratio = d > 0 ? Math.min(1, Math.max(0, t / d)) : 0;
     const playedLen = ratio * totalLen;
-
     played.setAttribute('stroke-dasharray', `${playedLen} ${totalLen + 10}`);
-
     const pt = infPath.getPointAtLength(playedLen);
     playhead.setAttribute('cx', pt.x);
     playhead.setAttribute('cy', pt.y);
+  }
+
+  function startSim() {
+    stopSim();
+    simTicker = setInterval(() => {
+      t += 1;
+      const d = trackDuration();
+      if (t >= d) {
+        if (repeat) t = 0;
+        else { doNext(true); return; }
+      }
+      paintUI();
+    }, 1000);
+  }
+  function stopSim() {
+    if (simTicker) { clearInterval(simTicker); simTicker = null; }
   }
 
   function togglePlay() {
     playing = !playing;
     if (playing) {
       wrap.classList.add('playing');
-      ticker = setInterval(tick, 1000);
+      if (hasReal(idx)) {
+        audio.play().catch(err => console.warn('Audio play blocked:', err));
+      } else {
+        startSim();
+      }
     } else {
       wrap.classList.remove('playing');
-      clearInterval(ticker);
+      if (hasReal(idx)) audio.pause();
+      else stopSim();
     }
   }
 
-  function tick() {
-    const tr = tracks[idx];
-    t += 1;
-    if (t >= tr.duration) {
-      if (repeat) t = 0;
-      else { doNext(); return; }
-    }
-    render();
-  }
-
-  function doNext() {
+  function doNext(autoAdvance = false) {
     idx = shuffle
       ? (tracks.length > 1
           ? (idx + 1 + Math.floor(Math.random() * (tracks.length - 1))) % tracks.length
           : 0)
       : (idx + 1) % tracks.length;
-    t = 0;
-    render();
+    const wasPlaying = playing;
+    loadTrack();
+    if (wasPlaying || autoAdvance) {
+      playing = false;
+      togglePlay();
+    }
   }
 
   function doPrev() {
-    if (t > 3) t = 0;
-    else { idx = (idx - 1 + tracks.length) % tracks.length; t = 0; }
-    render();
+    if (t > 3) {
+      t = 0;
+      if (hasReal(idx)) audio.currentTime = 0;
+      paintUI();
+      return;
+    }
+    idx = (idx - 1 + tracks.length) % tracks.length;
+    const wasPlaying = playing;
+    loadTrack();
+    if (wasPlaying) { playing = false; togglePlay(); }
   }
 
+  function seekTo(ratio) {
+    const d = trackDuration();
+    t = d * ratio;
+    if (hasReal(idx)) audio.currentTime = t;
+    paintUI();
+  }
+
+  // audio events
+  audio.addEventListener('loadedmetadata', paintUI);
+  audio.addEventListener('timeupdate', () => {
+    if (!hasReal(idx)) return;
+    t = audio.currentTime;
+    paintUI();
+  });
+  audio.addEventListener('ended', () => {
+    if (repeat) { audio.currentTime = 0; audio.play(); }
+    else { playing = false; doNext(true); }
+  });
+
+  // seek by clicking infinity curve
   function svgPoint(evt) {
     const pt = svg.createSVGPoint();
-    pt.x = evt.clientX;
-    pt.y = evt.clientY;
+    pt.x = evt.clientX; pt.y = evt.clientY;
     const ctm = svg.getScreenCTM();
     if (!ctm) return null;
     return pt.matrixTransform(ctm.inverse());
   }
-
   function nearestLength(x, y) {
     let bestLen = 0, bestDist = Infinity;
     const samples = 260;
@@ -441,26 +565,21 @@
     }
     return bestLen;
   }
-
   hit.addEventListener('click', e => {
     const p = svgPoint(e);
     if (!p) return;
     const L = nearestLength(p.x, p.y);
-    const ratio = L / totalLen;
-    t = Math.floor(tracks[idx].duration * ratio);
-    render();
+    seekTo(L / totalLen);
   });
 
-  starBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    togglePlay();
-  });
-
-  $('next').addEventListener('click', doNext);
+  // controls
+  starBtn.addEventListener('click', e => { e.stopPropagation(); togglePlay(); });
+  $('next').addEventListener('click', () => doNext());
   $('prev').addEventListener('click', doPrev);
   $('repeat').addEventListener('click', () => {
     repeat = !repeat;
     $('repeat').classList.toggle('active', repeat);
+    audio.loop = false; // manual loop via 'ended' so we can handle shuffle/advance
   });
   $('shuffle').addEventListener('click', () => {
     shuffle = !shuffle;
@@ -474,7 +593,7 @@
     else if (e.code === 'ArrowLeft') doPrev();
   });
 
-  render();
+  loadTrack();
 })();
 </script>
 </body>
